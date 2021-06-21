@@ -12,9 +12,13 @@ const App = () => {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="QuizBee" component={ConfigureGame} />
+          <Stack.Screen
+            name="ConfigureScreen"
+            component={ConfigureGame}
+            options={{headerShown: false}}
+          />
           <Stack.Screen name="Question" component={PresentQuestion} />
-          <Stack.Screen name="Select Question" component={SelectQuestion} />
+          <Stack.Screen name="SelectQuestion" component={SelectQuestion} />
         </Stack.Navigator>
       </NavigationContainer>
     );
