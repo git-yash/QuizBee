@@ -17,7 +17,7 @@ const App = () => {
             component={ConfigureGame}
             options={{headerShown: false}}
           />
-          <Stack.Screen name="Question" component={PresentQuestion} />
+          <Stack.Screen name="PresentQuestion" component={PresentQuestion} />
           <Stack.Screen name="SelectQuestion" component={SelectQuestion} />
         </Stack.Navigator>
       </NavigationContainer>

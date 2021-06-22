@@ -12,44 +12,71 @@ import {
 } from 'native-base';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Question from '../models/Question';
 import {create} from 'apisauce';
 import Category from '../models/Category';
+import Question from '../models/Question';
+import Player from '../models/Player';
+
+const api = create({
+  baseURL: 'https://opentdb.com',
+  headers: {Accept: 'application/json'},
+});
 
 const ConfigureGame = ({navigation}) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
   const [numberOfQuestions, setNumberOfQuestions] = useState<number>(5);
 
-  type QuestionResult = {
-    response_code: number;
-    results: Question[];
-  };
-
   type CategoryResult = {trivia_categories: Category[]};
-
-  const api = create({
-    baseURL: 'https://opentdb.com',
-    headers: {Accept: 'application/json'},
-  });
 
   useEffect(() => {
     api
       .get('/api_category.php')
       .then(response => response.data as CategoryResult)
       .then(result => {
-        setCategories(result.trivia_categories);
+        setCategories(result.trivia_categories as Category[]);
       });
+  }, []);
 
-    // api
-    //   .get('/api.php?amount=10&category=9&difficulty=easy')
-    //   .then(response => response.data as QuestionResult)
-    //   .then(result => {
-    //     if (result.response_code === 0 && result.results) {
-    //       console.log(result.results.length);
-    //     }
-    //   });
-  }, [api]);
+  type QuestionResult = {
+    response_code: number;
+    results: Question[];
+  };
+
+  const getQuestionsForCategory = async (category: Category) => {
+    return api
+      .get(`/api.php?amount=${numberOfQuestions}&category=${category.id}`)
+      .then(response => response.data as QuestionResult)
+      .then(result => {
+        return Promise.resolve(result.results as Question[]);
+      });
+  };
+
+  const startGame = () => {
+    const players: Player[] = [];
+    for (let i = 1; i <= numberOfPlayers; i++) {
+      players.push(new Player(i));
+    }
+
+    let selectedCategories: Category[] = [];
+    categories.forEach(c => {
+      if (c.selected) {
+        const category = new Category();
+        Object.assign(category, c);
+        selectedCategories.push(category);
+      }
+    });
+
+    selectedCategories.forEach(async (c: Category) => {
+      const questions: Question[] = await getQuestionsForCategory(c);
+      c.setQuestions(questions);
+    });
+
+    navigation.navigate('SelectQuestion', {
+      players: players,
+      categories: selectedCategories,
+    });
+  };
 
   const isNumberOfPlayersSelected = (selectedNumberOfPlayers: number) => {
     return numberOfPlayers === selectedNumberOfPlayers;
@@ -70,12 +97,17 @@ const ConfigureGame = ({navigation}) => {
     );
   };
 
-  const createMultiSelectListItem = (label: string, isChecked = false) => {
+  const createCategoryItem = (category: Category) => {
     return (
-      <ListItem key={label}>
-        <CheckBox checked={isChecked} />
+      <ListItem
+        key={category.id}
+        onPress={() => {
+          category.selected = !category.selected;
+          setCategories([...categories]);
+        }}>
+        <CheckBox checked={category.selected} />
         <Body>
-          <Text>{label}</Text>
+          <Text>{category.name}</Text>
         </Body>
       </ListItem>
     );
@@ -86,7 +118,10 @@ const ConfigureGame = ({navigation}) => {
       <ListItem
         key={numberOfQuestion}
         onPress={() => setNumberOfQuestions(numberOfQuestion)}>
-        <Radio selected={numberOfQuestions === numberOfQuestion} />
+        <Radio
+          selected={numberOfQuestions === numberOfQuestion}
+          onPress={() => setNumberOfQuestions(numberOfQuestion)}
+        />
         <Body>
           <Text>{numberOfQuestion}</Text>
         </Body>
@@ -97,7 +132,7 @@ const ConfigureGame = ({navigation}) => {
   return (
     <Container>
       <ScrollView>
-        <Header style={{backgroundColor: 'white', paddingTop: 20, height: 100}}>
+        <Header style={{backgroundColor: 'white', paddingTop: 20, height: 90}}>
           <Text style={{color: '#3F51B5', fontWeight: 'bold', fontSize: 36}}>
             Quiz
           </Text>
@@ -122,15 +157,15 @@ const ConfigureGame = ({navigation}) => {
           </View>
           <View>
             <Text style={styles.sectionHeader}>Select categories</Text>
-            {categories.map(c => createMultiSelectListItem(c.name))}
+            {categories.map(c => createCategoryItem(c))}
           </View>
         </Content>
       </ScrollView>
       <Footer>
         <Button
           style={styles.startGameButton}
-          full
-          onPress={() => navigation.navigate('SelectQuestion')}>
+          light
+          onPress={() => startGame()}>
           <Text>Start Game</Text>
         </Button>
       </Footer>
