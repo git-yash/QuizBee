@@ -8,30 +8,30 @@ import {
   Header,
   ListItem,
   Radio,
-  Text,
-} from 'native-base';
-import {ScrollView, StyleSheet, View, Image} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {create} from 'apisauce';
-import Category from '../models/Category';
-import Question from '../models/Question';
-import Player from '../models/Player';
+  Text
+} from "native-base";
+import { ScrollView, StyleSheet, View, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { create } from "apisauce";
+import Category from "../models/Category";
+import Question from "../models/Question";
+import Player from "../models/Player";
 
 const api = create({
-  baseURL: 'https://opentdb.com',
-  headers: {Accept: 'application/json'},
+  baseURL: "https://opentdb.com",
+  headers: { Accept: "application/json" }
 });
 
-const ConfigureGame = ({navigation}) => {
+const ConfigureGame = ({ navigation }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
   const [numberOfQuestions, setNumberOfQuestions] = useState<number>(5);
 
-  type CategoryResult = {trivia_categories: Category[]};
+  type CategoryResult = { trivia_categories: Category[] };
 
   useEffect(() => {
     api
-      .get('/api_category.php')
+      .get("/api_category.php")
       .then(response => response.data as CategoryResult)
       .then(result => {
         setCategories(result.trivia_categories as Category[]);
@@ -52,7 +52,14 @@ const ConfigureGame = ({navigation}) => {
       });
   };
 
-  const startGame = () => {
+  const getQuestions = async (selectedCategories: Category[]) => {
+    for (const c of selectedCategories) {
+      const questions: Question[] = await getQuestionsForCategory(c);
+      c.setQuestions(questions);
+    }
+  };
+
+  const startGame = async () => {
     const players: Player[] = [];
     for (let i = 1; i <= numberOfPlayers; i++) {
       players.push(new Player(i));
@@ -67,14 +74,12 @@ const ConfigureGame = ({navigation}) => {
       }
     });
 
-    selectedCategories.forEach(async (c: Category) => {
-      const questions: Question[] = await getQuestionsForCategory(c);
-      c.setQuestions(questions);
-    });
+    await getQuestions(selectedCategories);
 
-    navigation.navigate('SelectQuestion', {
+    navigation.navigate("SelectQuestion", {
+      name: "Questions",
       players: players,
-      categories: selectedCategories,
+      categories: selectedCategories
     });
   };
 
@@ -132,14 +137,14 @@ const ConfigureGame = ({navigation}) => {
   return (
     <Container>
       <ScrollView>
-        <Header style={{backgroundColor: 'white', paddingTop: 20, height: 90}}>
-          <Text style={{color: '#3F51B5', fontWeight: 'bold', fontSize: 36}}>
+        <Header style={{ backgroundColor: "white", paddingTop: 20, height: 90 }}>
+          <Text style={{ color: "#3F51B5", fontWeight: "bold", fontSize: 36 }}>
             Quiz
           </Text>
-          <Text style={{color: '#f0ad4e', fontWeight: 'bold', fontSize: 36}}>
+          <Text style={{ color: "#f0ad4e", fontWeight: "bold", fontSize: 36 }}>
             Bee
           </Text>
-          <Image source={require('../assets/images/wasp.png')} />
+          <Image source={require("../assets/images/wasp.png")} />
         </Header>
         <Content>
           <View style={styles.playerButtonContainer}>
@@ -164,7 +169,6 @@ const ConfigureGame = ({navigation}) => {
       <Footer>
         <Button
           style={styles.startGameButton}
-          light
           onPress={() => startGame()}>
           <Text>Start Game</Text>
         </Button>
@@ -174,25 +178,25 @@ const ConfigureGame = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  playerText: {padding: 20},
+  playerText: { padding: 20 },
   playerButtonContainer: {
     padding: 20,
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row"
   },
   playerButton: {
-    margin: 10,
+    margin: 10
   },
   startGameButton: {
-    alignSelf: 'center',
-    padding: 20,
+    alignSelf: "center",
+    padding: 20
   },
   sectionHeader: {
     margin: 10,
     padding: 10,
-    fontWeight: 'bold',
-    backgroundColor: '#dedede',
-  },
+    fontWeight: "bold",
+    backgroundColor: "#dedede"
+  }
 });
 
 export default ConfigureGame;

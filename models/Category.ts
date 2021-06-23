@@ -5,7 +5,7 @@ export default class Category {
   name = '';
   selected = false;
 
-  public questions: Question[] | undefined;
+  public questions: Question[] = [];
 
   setQuestions(questions: Question[]) {
     this.questions = questions;

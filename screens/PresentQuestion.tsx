@@ -1,30 +1,54 @@
-import {Container, Content, Footer, Header} from 'native-base';
-import {create} from 'apisauce';
-import Question from '../models/Question';
-import React, {useEffect} from 'react';
-import {StyleSheet} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import { Body, Button, Container, Content, Footer, ListItem, Radio, Text, Toast } from "native-base";
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
-const api = create({
-  baseURL: 'https://opentdb.com',
-  headers: {Accept: 'application/json'},
-});
+const PresentQuestion = ({ navigation, route }) => {
+  const { question, players, categories } = route.params;
+  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
 
-const PresentQuestion = ({navigation}) => {
-  type QuestionResult = {
-    response_code: number;
-    results: Question[];
+  const createAnswerChoiceItem = (id: number, answerChoice: string) => {
+    return (
+      <ListItem
+        key={id}
+        onPress={() => setSelectedAnswer(answerChoice)}>
+        <Radio
+          selected={selectedAnswer === answerChoice}
+          onPress={() => setSelectedAnswer(answerChoice)}
+        />
+        <Body>
+          <Text>{answerChoice}</Text>
+        </Body>
+      </ListItem>
+    );
   };
-
-  useEffect(() => {}, []);
 
   return (
     <Container>
       <ScrollView>
-        <Header />
-        <Content />
+        <Content>
+          <Text style={{ fontSize: 20, padding: 10 }}>{question.question}</Text>
+          {question.getOptions().map((o: string, index: number) => createAnswerChoiceItem(index, o))}
+        </Content>
       </ScrollView>
-      <Footer />
+      <Footer>
+        <Button style={{ alignSelf: "center", padding: 20 }} onPress={() => {
+          question.setAnswer(selectedAnswer);
+          Toast.show({
+            text: question.isCorrectAnswer() ? "Correct" : "Incorrect",
+            type: question.isCorrectAnswer() ? "success" : "danger"
+          });
+
+          navigation.navigate("SelectQuestion", {
+            name: "Select Question",
+            players: players,
+            categories: categories
+          });
+
+        }}>
+          <Text>Submit</Text>
+        </Button>
+      </Footer>
     </Container>
   );
 };
