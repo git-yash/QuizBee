@@ -27,13 +27,13 @@ const PresentQuestion = ({ navigation, route }) => {
     <Container>
       <ScrollView>
         <Content>
-          <Text style={{ fontSize: 20, padding: 10 }}>{question.question}</Text>
+          <Text style={{ fontSize: 22, padding: 10, marginBottom: 20, marginTop: 20 }}>{question.question}</Text>
           {question.getOptions().map((o: string, index: number) => createAnswerChoiceItem(index, o))}
         </Content>
       </ScrollView>
       <Footer>
         <Button style={{ alignSelf: "center", padding: 20 }} onPress={() => {
-          question.setAnswer(selectedAnswer);
+          question.attempted_answer = selectedAnswer;
           Toast.show({
             text: question.isCorrectAnswer() ? "Correct" : "Incorrect",
             type: question.isCorrectAnswer() ? "success" : "danger"
@@ -42,9 +42,9 @@ const PresentQuestion = ({ navigation, route }) => {
           navigation.navigate("SelectQuestion", {
             name: "Select Question",
             players: players,
-            categories: categories
+            categories: categories,
+            answeredQuestion: question
           });
-
         }}>
           <Text>Submit</Text>
         </Button>

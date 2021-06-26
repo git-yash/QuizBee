@@ -6,7 +6,7 @@ export default class Question {
   correct_answer = "";
   incorrect_answers: string[] = [];
 
-  private attempted_answer = '';
+  attempted_answer = "";
 
   getDifficultyWeightage(): number {
     switch (this.difficulty) {
@@ -39,9 +39,5 @@ export default class Question {
     const randomSpot = Math.floor(Math.random() * this.incorrect_answers.length);
     options.splice(randomSpot, 0, this.correct_answer);
     return options;
-  }
-
-  setAnswer(answer: string) {
-    this.attempted_answer = answer;
   }
 }

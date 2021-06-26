@@ -12,9 +12,8 @@ export default class Player {
 
   private answered_questions: Question[] = [];
 
-  answerQuestion(question: Question, answer: string) {
+  answerQuestion(question: Question) {
     this.score += question.getScore();
-    question.setAnswer(answer);
     this.answered_questions.push(question);
   }
 }
