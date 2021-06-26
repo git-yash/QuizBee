@@ -19,7 +19,8 @@ const SelectQuestion = ({ route, navigation }) => {
                   name: question.category,
                   question: question,
                   players: players,
-                  categories: categories
+                  categories: categories,
+                  currentPlayerRef: currentPlayer
                 });
               }}
               style={{
@@ -37,7 +38,6 @@ const SelectQuestion = ({ route, navigation }) => {
       return;
     }
 
-    currentPlayer.answerQuestion(answeredQuestion);
     if (currentPlayer.id === players.length) {
       setCurrentPlayer(players[0]);
     } else {
