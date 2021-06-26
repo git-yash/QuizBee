@@ -1,23 +1,23 @@
 import { Body, Button, Container, Content, Footer, ListItem, Radio, Text, Toast } from "native-base";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 const PresentQuestion = ({ navigation, route }) => {
   const { question, players, categories } = route.params;
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const [selectedAnswer, setSelectedAnswer] = useState<string>(question.attempted_answer);
 
   const createAnswerChoiceItem = (id: number, answerChoice: string) => {
     return (
       <ListItem
         key={id}
         onPress={() => setSelectedAnswer(answerChoice)}>
-        <Radio
+        {!question.attempted_answer && <Radio
           selected={selectedAnswer === answerChoice}
           onPress={() => setSelectedAnswer(answerChoice)}
-        />
+        />}
         <Body>
-          <Text>{answerChoice}</Text>
+          <Text style={{color: selectedAnswer === answerChoice && question.getColor('black')}}>{answerChoice}</Text>
         </Body>
       </ListItem>
     );
@@ -31,8 +31,13 @@ const PresentQuestion = ({ navigation, route }) => {
           {question.getOptions().map((o: string, index: number) => createAnswerChoiceItem(index, o))}
         </Content>
       </ScrollView>
-      <Footer>
+      {!question.attempted_answer && <Footer>
         <Button style={{ alignSelf: "center", padding: 20 }} onPress={() => {
+          if (!selectedAnswer) {
+            Alert.alert("Invalid selection", "Please select an answer");
+            return;
+          }
+
           question.attempted_answer = selectedAnswer;
           Toast.show({
             text: question.isCorrectAnswer() ? "Correct" : "Incorrect",
@@ -48,7 +53,7 @@ const PresentQuestion = ({ navigation, route }) => {
         }}>
           <Text>Submit</Text>
         </Button>
-      </Footer>
+      </Footer>}
     </Container>
   );
 };

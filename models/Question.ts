@@ -40,4 +40,16 @@ export default class Question {
     options.splice(randomSpot, 0, this.correct_answer);
     return options;
   }
+
+  getColor(defaultColor = "white") {
+    const isCorrect = this.attempted_answer === this.correct_answer;
+    const isIncorrect = this.attempted_answer;
+    if (isCorrect) {
+      return "#89d469";
+    } else if (isIncorrect) {
+      return "#f19191";
+    } else {
+      return defaultColor;
+    }
+  };
 }

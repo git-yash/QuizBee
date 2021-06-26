@@ -12,17 +12,6 @@ const SelectQuestion = ({ route, navigation }) => {
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(Util.getRandomPlayerId(players));
 
   const createQuestionButton = (question: Question, id: number, navigation) => {
-    const getButtonColor = () => {
-      const isCorrect = question.attempted_answer === question.correct_answer;
-      const isIncorrect = question.attempted_answer;
-      if (isCorrect) {
-        return "#89d469";
-      } else if (isIncorrect) {
-        return "#f19191";
-      } else {
-        return "white";
-      }
-    };
     return (
       <Button key={id} rounded light
               onPress={() => {
@@ -35,9 +24,9 @@ const SelectQuestion = ({ route, navigation }) => {
               }}
               style={{
                 margin: 5,
-                backgroundColor: getButtonColor()
+                backgroundColor: question.getColor()
               }}>
-        <Text>{id}</Text>
+        <Text>{question.getDifficultyWeightage()}</Text>
       </Button>
     );
   };
