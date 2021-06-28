@@ -1,23 +1,54 @@
-import { Body, Button, Container, Content, Footer, ListItem, Radio, Text, Toast } from "native-base";
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { Body, Button, Container, Content, Footer, ListItem, Radio, Text, Toast, View } from "native-base";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Player from "../models/Player";
 
 const PresentQuestion = ({ navigation, route }) => {
-  const { question, players, categories } = route.params;
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const { question, players, categories, currentPlayerRef } = route.params;
+  const [selectedAnswer, setSelectedAnswer] = useState<string>(question.attempted_answer);
+  const [currentPlayer, setCurrentPlayer] = useState<Player>(currentPlayerRef);
+
+  useEffect(() => {
+    setCurrentPlayer(currentPlayerRef);
+  }, []);
+
+  const createPlayerItem = (player: Player) => {
+    const stealQuestion = (player: Player) => {
+      setCurrentPlayer(player);
+    };
+
+    return (
+      <View key={player.id}
+            style={{
+              backgroundColor: currentPlayer?.id === player.id ? "#f0ad4e" : "white",
+              borderRightColor: "lightgray",
+              borderRightWidth: 1,
+              flex: 1,
+              padding: 10,
+              borderTopWidth: 1,
+              borderTopColor: "lightgray",
+              borderBottomWidth: 1,
+              borderBottomColor: "lightgray"
+            }}>
+        <Text style={{ alignSelf: "center", fontWeight: "bold" }}>{player.name}</Text>
+        <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 22 }}>{player.score}</Text>
+        {!question.attempted_answer && currentPlayer?.id !== player.id && <Button onPress={() => stealQuestion(player)}><Text>Steal</Text></Button>}
+      </View>
+    );
+  };
 
   const createAnswerChoiceItem = (id: number, answerChoice: string) => {
     return (
       <ListItem
         key={id}
         onPress={() => setSelectedAnswer(answerChoice)}>
-        <Radio
+        {!question.attempted_answer && <Radio
           selected={selectedAnswer === answerChoice}
           onPress={() => setSelectedAnswer(answerChoice)}
-        />
+        />}
         <Body>
-          <Text>{answerChoice}</Text>
+          <Text style={{ color: selectedAnswer === answerChoice && question.getColor("black") }}>{answerChoice}</Text>
         </Body>
       </ListItem>
     );
@@ -27,13 +58,22 @@ const PresentQuestion = ({ navigation, route }) => {
     <Container>
       <ScrollView>
         <Content>
-          <Text style={{ fontSize: 20, padding: 10 }}>{question.question}</Text>
+          <View style={{ display: "flex", flexDirection: "row", marginBottom: 10 }}>
+            {players.map((p: Player) => createPlayerItem(p))}
+          </View>
+          <Text style={{ fontSize: 22, padding: 10, marginBottom: 20, marginTop: 20 }}>{question.question}</Text>
           {question.getOptions().map((o: string, index: number) => createAnswerChoiceItem(index, o))}
         </Content>
       </ScrollView>
-      <Footer>
+      {!question.attempted_answer && <Footer>
         <Button style={{ alignSelf: "center", padding: 20 }} onPress={() => {
-          question.setAnswer(selectedAnswer);
+          if (!selectedAnswer) {
+            Alert.alert("Invalid selection", "Please select an answer");
+            return;
+          }
+
+          question.attempted_answer = selectedAnswer;
+          currentPlayer.answerQuestion(question);
           Toast.show({
             text: question.isCorrectAnswer() ? "Correct" : "Incorrect",
             type: question.isCorrectAnswer() ? "success" : "danger"
@@ -42,13 +82,13 @@ const PresentQuestion = ({ navigation, route }) => {
           navigation.navigate("SelectQuestion", {
             name: "Select Question",
             players: players,
-            categories: categories
+            categories: categories,
+            answeredQuestion: question
           });
-
         }}>
           <Text>Submit</Text>
         </Button>
-      </Footer>
+      </Footer>}
     </Container>
   );
 };

@@ -10,7 +10,7 @@ import {
   Radio,
   Text
 } from "native-base";
-import { ScrollView, StyleSheet, View, Image } from "react-native";
+import { ScrollView, StyleSheet, View, Image, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { create } from "apisauce";
 import Category from "../models/Category";
@@ -34,7 +34,7 @@ const ConfigureGame = ({ navigation }) => {
       .get("/api_category.php")
       .then(response => response.data as CategoryResult)
       .then(result => {
-        setCategories(result.trivia_categories as Category[]);
+        setCategories(result.trivia_categories.map(c => Object.assign(new Category(), c)));
       });
   }, []);
 
@@ -48,31 +48,32 @@ const ConfigureGame = ({ navigation }) => {
       .get(`/api.php?amount=${numberOfQuestions}&category=${category.id}`)
       .then(response => response.data as QuestionResult)
       .then(result => {
-        return Promise.resolve(result.results as Question[]);
+        return Promise.resolve(result.results.map(q => Object.assign(new Question(), q)));
       });
   };
 
   const getQuestions = async (selectedCategories: Category[]) => {
     for (const c of selectedCategories) {
       const questions: Question[] = await getQuestionsForCategory(c);
-      c.setQuestions(questions);
+      const sortedQuestions = questions.sort((a, b) => a.getDifficultyWeightage() - b.getDifficultyWeightage());
+      c.setQuestions(sortedQuestions);
     }
   };
 
   const startGame = async () => {
+    let selectedCategories = categories.filter(c => c.selected);
+    if (selectedCategories.length === 0) {
+      Alert.alert("Invalid category selection", "Please select at least one category");
+      return;
+    } else if (selectedCategories.length > 8) {
+      Alert.alert("Invalid category selection", "Select less than 8 categories");
+      return;
+    }
+
     const players: Player[] = [];
     for (let i = 1; i <= numberOfPlayers; i++) {
       players.push(new Player(i));
     }
-
-    let selectedCategories: Category[] = [];
-    categories.forEach(c => {
-      if (c.selected) {
-        const category = new Category();
-        Object.assign(category, c);
-        selectedCategories.push(category);
-      }
-    });
 
     await getQuestions(selectedCategories);
 

@@ -6,7 +6,7 @@ export default class Question {
   correct_answer = "";
   incorrect_answers: string[] = [];
 
-  private attempted_answer = '';
+  attempted_answer = "";
 
   getDifficultyWeightage(): number {
     switch (this.difficulty) {
@@ -41,7 +41,15 @@ export default class Question {
     return options;
   }
 
-  setAnswer(answer: string) {
-    this.attempted_answer = answer;
-  }
+  getColor(defaultColor = "white") {
+    const isCorrect = this.attempted_answer === this.correct_answer;
+    const isIncorrect = this.attempted_answer;
+    if (isCorrect) {
+      return "#89d469";
+    } else if (isIncorrect) {
+      return "#f19191";
+    } else {
+      return defaultColor;
+    }
+  };
 }
