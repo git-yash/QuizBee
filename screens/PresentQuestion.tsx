@@ -1,4 +1,5 @@
 import {
+  ActionSheet,
   Body,
   Button,
   Container,
@@ -27,11 +28,32 @@ const PresentQuestion = ({ navigation, route }) => {
     setCurrentPlayer(currentPlayerRef);
   }, []);
 
-  const createPlayerItem = (player: Player) => {
-    const stealQuestion = (player: Player) => {
-      setCurrentPlayer(player);
-    };
+  const showStealOptions = () => {
+    const otherPlayers = players.filter((p: Player) => p.id != currentPlayer.id);
+    ActionSheet.show(
+      {
+        options: otherPlayers.map((p: Player) => `Player ${p.id}`),
+        title: "Who is stealing?"
+      },
+      (buttonIndex: number) => {
+        if (buttonIndex === undefined) {
+          return;
+        }
+        setCurrentPlayer(players[buttonIndex]);
+      }
+    );
+  };
 
+  React.useLayoutEffect(() => {
+    if (question.attempted_answer) {
+      return;
+    }
+    navigation.setOptions({
+      headerRight: () => (<Button onPress={() => showStealOptions()}><Icon name="shuffle" /></Button>)
+    });
+  }, [navigation]);
+
+  const createPlayerItem = (player: Player) => {
     return (
       <View
         key={player.id}
@@ -53,12 +75,6 @@ const PresentQuestion = ({ navigation, route }) => {
         <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 22 }}>
           {player.score}
         </Text>
-        {!question.attempted_answer && currentPlayer?.id !== player.id && (
-          <TouchableOpacity onPress={() => stealQuestion(player)}>
-            <Icon style={{ textAlign: "center", color: "#3F51B5" }} name="shuffle" /><Text
-            style={{ fontSize: 13, textAlign: "center", color: "#3F51B5" }}>Steal</Text>
-          </TouchableOpacity>
-        )}
       </View>
     );
   };
@@ -140,13 +156,13 @@ const PresentQuestion = ({ navigation, route }) => {
                 answeredQuestion: question
               });
             }}>
-              <Text>Submit</Text>
-              </Button>
-              </Footer>
-              )}
-        </Container>
-      );
-      };
+            <Text>Submit</Text>
+          </Button>
+        </Footer>
+      )}
+    </Container>
+  );
+};
 
 const styles = StyleSheet.create({});
 
