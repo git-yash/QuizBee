@@ -2,7 +2,7 @@ import React from "react";
 import { Root } from "native-base";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import ConfigureGame from "./screens/ConfigureGame";
+import ConfigureGame from "./screens/ConfigureGame/ConfigureGame";
 import PresentQuestion from "./screens/PresentQuestion";
 import SelectQuestion from "./screens/SelectQuestion";
 
