@@ -1,6 +1,6 @@
 import { Body, Button, Container, Content, Footer, Icon, ListItem, Radio, Text, Toast, View } from "native-base";
 import React from "react";
-import { Alert } from "react-native";
+import { Alert, Route } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Player from "../../models/Player";
 import { decode } from "html-entities";
@@ -8,7 +8,8 @@ import styles from "./PresentQuestion.style";
 import usePresentQuestion from "./usePresentQuestion";
 import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
 
-const PresentQuestion = ({ navigation, route }) => {
+const PresentQuestion = (props: { navigation: any, route: Route }) => {
+  const { navigation, route } = props;
   const {
     showStealOptions,
     currentPlayer,
@@ -17,7 +18,7 @@ const PresentQuestion = ({ navigation, route }) => {
     setSelectedAnswer,
     players,
     categories,
-    getColor
+    getColor,
   } = usePresentQuestion(navigation, route);
 
   const createAnswerChoiceItem = (id: number, answerChoice: string) => {
@@ -43,7 +44,7 @@ const PresentQuestion = ({ navigation, route }) => {
     navigation.setOptions({
       headerRight: () => (<Button onPress={() => showStealOptions()}><Icon name="shuffle" /></Button>)
     });
-  }, [navigation]);
+  }, [currentPlayer]);
 
   return (
     <Container>

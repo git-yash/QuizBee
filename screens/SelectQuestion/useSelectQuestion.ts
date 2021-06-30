@@ -3,8 +3,9 @@ import Category from "../../models/Category";
 import Question from "../../models/Question";
 import Player from "../../models/Player";
 import Util from "../../util/Util";
+import { Route } from "react-native";
 
-const useSelectQuestion = (route) => {
+const useSelectQuestion = (route: Route) => {
   const { categories, players, answeredQuestion } = route.params;
   const [currentPlayer, setCurrentPlayer] = useState<Player>(Util.getRandomPlayerId(players));
 

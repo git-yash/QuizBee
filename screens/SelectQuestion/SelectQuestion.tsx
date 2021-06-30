@@ -7,15 +7,17 @@ import Player from "../../models/Player";
 import useSelectQuestion from "./useSelectQuestion";
 import styles from "./SelectQuestion.style";
 import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
+import { Route } from "react-native";
 
-const SelectQuestion = ({ route, navigation }) => {
+const SelectQuestion = (props: { navigation: any, route: Route }) => {
+  const { navigation, route } = props;
   const {
     categories,
     currentPlayer,
     players
   } = useSelectQuestion(route);
 
-  const createQuestionButton = (question: Question, id: number, navigation) => {
+  const createQuestionButton = (question: Question, id: number) => {
     return (
       <Button key={id} rounded light
               onPress={() => {
@@ -36,7 +38,7 @@ const SelectQuestion = ({ route, navigation }) => {
     );
   };
 
-  const createCategoryItem = (category: Category, navigation) => {
+  const createCategoryItem = (category: Category) => {
     return (
       <View key={category.id}
             style={styles.categoryView}>
@@ -44,7 +46,7 @@ const SelectQuestion = ({ route, navigation }) => {
           <Text style={styles.categoryText}>{category.name}</Text>
         </View>
         <View style={styles.categoryQuestions}>
-          {category.questions.map((q: Question, index: number) => createQuestionButton(q, index + 1, navigation))}
+          {category.questions.map((q: Question, index: number) => createQuestionButton(q, index + 1))}
         </View>
       </View>
     );
@@ -57,7 +59,7 @@ const SelectQuestion = ({ route, navigation }) => {
           style={styles.playerItemView}>
           {players.map((p: Player) => <ScoreBoard key={p.id} currentPlayer={currentPlayer} player={p} />)}
         </View>
-        {categories.map((c: Category) => createCategoryItem(c, navigation))}
+        {categories.map((c: Category) => createCategoryItem(c))}
       </ScrollView>
     </Container>
   );

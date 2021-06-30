@@ -5,7 +5,7 @@ import Category from "../../models/Category";
 import Question from "../../models/Question";
 import ConfigureGameService from "./ConfigureGame.service";
 
-const useConfigureGame = (navigation) => {
+const useConfigureGame = (navigation: any) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
   const [numberOfQuestions, setNumberOfQuestions] = useState<number>(5);

@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Player from "../../models/Player";
 import { ActionSheet } from "native-base";
+import { Route } from "react-native";
 
-const usePresentQuestion = (navigation, route) => {
+const usePresentQuestion = (navigation: any, route: Route) => {
   const { question, players, categories, currentPlayerRef } = route.params;
   const [selectedAnswer, setSelectedAnswer] = useState<string>(
     question.attempted_answer
   );
   const [currentPlayer, setCurrentPlayer] = useState<Player>(currentPlayerRef);
 
-  useEffect(() => {
-    setCurrentPlayer(currentPlayerRef);
-  }, []);
+  const onPlayerSwitch = (index: number, otherPlayers: Player[]) => {
+    if (index === undefined) {
+      return;
+    }
+    const player = otherPlayers[index];
+    setCurrentPlayer(player);
+  };
 
   const showStealOptions = () => {
     const otherPlayers = players.filter((p: Player) => p.id != currentPlayer.id);
@@ -20,12 +25,7 @@ const usePresentQuestion = (navigation, route) => {
         options: otherPlayers.map((p: Player) => `Player ${p.id}`),
         title: "Who is stealing?"
       },
-      (buttonIndex: number) => {
-        if (buttonIndex === undefined) {
-          return;
-        }
-        setCurrentPlayer(players[buttonIndex]);
-      }
+      (buttonIndex: number) => onPlayerSwitch(buttonIndex, otherPlayers)
     );
   };
 

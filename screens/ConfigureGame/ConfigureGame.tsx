@@ -5,7 +5,8 @@ import Category from "../../models/Category";
 import styles from "./ConfigureGame.style";
 import useConfigureGame from "./useConfigureGame";
 
-const ConfigureGame = ({ navigation }) => {
+const ConfigureGame = (props: { navigation: any }) => {
+  const { navigation } = props;
   const {
     startGame,
     isNumberOfPlayersSelected,
