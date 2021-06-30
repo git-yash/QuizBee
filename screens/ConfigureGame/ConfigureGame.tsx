@@ -66,11 +66,11 @@ const ConfigureGame = ({ navigation }) => {
   return (
     <Container>
       <ScrollView>
-        <Header style={{ backgroundColor: "white", paddingTop: 20, height: 90 }}>
-          <Text style={{ color: "#3F51B5", fontWeight: "bold", fontSize: 36 }}>
+        <Header style={styles.titleHeader}>
+          <Text style={styles.quizWord}>
             Quiz
           </Text>
-          <Text style={{ color: "#f0ad4e", fontWeight: "bold", fontSize: 36 }}>
+          <Text style={styles.beeWord}>
             Bee
           </Text>
           <Image source={require("../../assets/images/wasp.png")} />

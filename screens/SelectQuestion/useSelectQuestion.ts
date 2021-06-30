@@ -6,7 +6,7 @@ import Util from "../../util/Util";
 
 const useSelectQuestion = (route) => {
   const { categories, players, answeredQuestion } = route.params;
-  const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(Util.getRandomPlayerId(players));
+  const [currentPlayer, setCurrentPlayer] = useState<Player>(Util.getRandomPlayerId(players));
 
   useEffect(() => {
     // guard clause

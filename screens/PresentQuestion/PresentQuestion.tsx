@@ -6,6 +6,7 @@ import Player from "../../models/Player";
 import { decode } from "html-entities";
 import styles from "./PresentQuestion.style";
 import usePresentQuestion from "./usePresentQuestion";
+import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
 
 const PresentQuestion = ({ navigation, route }) => {
   const {
@@ -18,30 +19,6 @@ const PresentQuestion = ({ navigation, route }) => {
     categories,
     getColor
   } = usePresentQuestion(navigation, route);
-
-  const createPlayerItem = (player: Player) => {
-    return (
-      <View
-        key={player.id}
-        style={{
-          backgroundColor: currentPlayer?.id === player.id ? "#f0ad4e" : "white",
-          borderRightColor: "lightgray",
-          borderRightWidth: 1,
-          flex: 1,
-          padding: 10,
-          borderTopWidth: 1,
-          borderTopColor: "lightgray",
-          borderBottomWidth: 1
-        }}>
-        <Text style={styles.playerName}>
-          {player.name}
-        </Text>
-        <Text style={styles.playerScore}>
-          {player.score}
-        </Text>
-      </View>
-    );
-  };
 
   const createAnswerChoiceItem = (id: number, answerChoice: string) => {
     return (
@@ -74,7 +51,7 @@ const PresentQuestion = ({ navigation, route }) => {
         <Content>
           <View
             style={styles.playerScores}>
-            {players.map((p: Player) => createPlayerItem(p))}
+            {players.map((p: Player) => <ScoreBoard key={p.id} currentPlayer={currentPlayer} player={p} />)}
           </View>
           <Text
             style={styles.questionText}>

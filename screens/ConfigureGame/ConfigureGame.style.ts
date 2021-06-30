@@ -19,6 +19,21 @@ const styles = StyleSheet.create({
     padding: 10,
     fontWeight: "bold",
     backgroundColor: "#dedede"
+  },
+  titleHeader: {
+    backgroundColor: "white",
+    paddingTop: 20,
+    height: 90
+  },
+  quizWord: {
+    color: "#3F51B5",
+    fontWeight: "bold",
+    fontSize: 36
+  },
+  beeWord: {
+    color: "#f0ad4e",
+    fontWeight: "bold",
+    fontSize: 36
   }
 });
 

@@ -5,6 +5,8 @@ import Category from "../../models/Category";
 import Question from "../../models/Question";
 import Player from "../../models/Player";
 import useSelectQuestion from "./useSelectQuestion";
+import styles from "./SelectQuestion.style";
+import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
 
 const SelectQuestion = ({ route, navigation }) => {
   const {
@@ -26,48 +28,23 @@ const SelectQuestion = ({ route, navigation }) => {
                 });
               }}
               style={{
-                margin: 5,
+                ...styles.questionButton,
                 backgroundColor: question.getColor()
               }}>
         <Text>{question.getDifficultyWeightage()}</Text>
       </Button>
     );
   };
-  const createPlayerItem = (player: Player) => {
-    return (
-      <View key={player.id}
-            style={{
-              backgroundColor: currentPlayer?.id === player.id ? "#f0ad4e" : "white",
-              borderRightColor: "lightgray",
-              borderRightWidth: 1,
-              flex: 1,
-              padding: 10,
-              borderTopWidth: 1,
-              borderTopColor: "lightgray",
-              borderBottomWidth: 1,
-              borderBottomColor: "lightgray"
-            }}>
-        <Text style={{ alignSelf: "center", fontWeight: "bold" }}>{player.name}</Text>
-        <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 22 }}>{player.score}</Text>
-      </View>
-    );
-  };
 
   const createCategoryItem = (category: Category, navigation) => {
     return (
       <View key={category.id}
-            style={{
-              backgroundColor: "#ececec",
-              padding: 10,
-              marginBottom: 5,
-              borderBottomColor: "lightgray",
-              borderBottomWidth: 1
-            }}>
+            style={styles.categoryView}>
         <View>
-          <Text style={{ fontSize: 22, marginBottom: 10, marginLeft: 5 }}>{category.name}</Text>
+          <Text style={styles.categoryText}>{category.name}</Text>
         </View>
-        <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-          {category.questions.map((q: Question, index: number) => createQuestionButton(Object.assign(new Question(), q), index + 1, navigation))}
+        <View style={styles.categoryQuestions}>
+          {category.questions.map((q: Question, index: number) => createQuestionButton(q, index + 1, navigation))}
         </View>
       </View>
     );
@@ -76,8 +53,9 @@ const SelectQuestion = ({ route, navigation }) => {
   return (
     <Container>
       <ScrollView>
-        <View style={{ display: "flex", flexDirection: "row", marginBottom: 10 }}>
-          {players.map((p: Player) => createPlayerItem(p))}
+        <View
+          style={styles.playerItemView}>
+          {players.map((p: Player) => <ScoreBoard key={p.id} currentPlayer={currentPlayer} player={p} />)}
         </View>
         {categories.map((c: Category) => createCategoryItem(c, navigation))}
       </ScrollView>

@@ -1,15 +1,6 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  playerName: {
-    alignSelf: "center",
-    fontWeight: "bold"
-  },
-  playerScore: {
-    alignSelf: "center",
-    fontWeight: "bold",
-    fontSize: 22
-  },
   playerScores: {
     display: "flex",
     flexDirection: "row",
