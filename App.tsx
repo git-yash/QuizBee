@@ -3,8 +3,8 @@ import { Root } from "native-base";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import ConfigureGame from "./screens/ConfigureGame/ConfigureGame";
-import PresentQuestion from "./screens/PresentQuestion";
-import SelectQuestion from "./screens/SelectQuestion";
+import PresentQuestion from "./screens/PresentQuestion/PresentQuestion";
+import SelectQuestion from "./screens/SelectQuestion/SelectQuestion";
 
 const App = () => {
   const Stack = createStackNavigator();

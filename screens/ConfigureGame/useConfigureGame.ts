@@ -5,13 +5,13 @@ import Category from "../../models/Category";
 import Question from "../../models/Question";
 import ConfigureGameService from "./ConfigureGame.service";
 
-const useConfigureGame = ({ navigation }) => {
+const useConfigureGame = (navigation) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
   const [numberOfQuestions, setNumberOfQuestions] = useState<number>(5);
   const configureGameService = new ConfigureGameService();
 
-  const getQuestions = async (selectedCategories: Category[]) => {
+  const setQuestions = async (selectedCategories: Category[]) => {
     for (const c of selectedCategories) {
       const questions: Question[] = await configureGameService.getQuestionsForCategory(c, numberOfQuestions);
       const sortedQuestions = questions.sort((a, b) => a.getDifficultyWeightage() - b.getDifficultyWeightage());
@@ -38,7 +38,7 @@ const useConfigureGame = ({ navigation }) => {
       players.push(new Player(i));
     }
 
-    await getQuestions(selectedCategories);
+    await setQuestions(selectedCategories);
 
     navigation.navigate("SelectQuestion", {
       name: "Questions",

@@ -98,7 +98,7 @@ const ConfigureGame = ({ navigation }) => {
       <Footer>
         <Button
           style={styles.startGameButton}
-          onPress={() => startGame()}>
+          onPress={async () => await startGame()}>
           <Text>Start Game</Text>
         </Button>
       </Footer>

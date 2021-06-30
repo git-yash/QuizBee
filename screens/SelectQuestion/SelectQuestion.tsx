@@ -1,15 +1,17 @@
 import { Button, Container, Text, View } from "native-base";
-import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import React from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import Category from "../models/Category";
-import Question from "../models/Question";
-import Player from "../models/Player";
-import Util from "../util/Util";
+import Category from "../../models/Category";
+import Question from "../../models/Question";
+import Player from "../../models/Player";
+import useSelectQuestion from "./useSelectQuestion";
 
 const SelectQuestion = ({ route, navigation }) => {
-  const { categories, players, answeredQuestion } = route.params;
-  const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(Util.getRandomPlayerId(players));
+  const {
+    categories,
+    currentPlayer,
+    players
+  } = useSelectQuestion(route);
 
   const createQuestionButton = (question: Question, id: number, navigation) => {
     return (
@@ -31,30 +33,6 @@ const SelectQuestion = ({ route, navigation }) => {
       </Button>
     );
   };
-
-  useEffect(() => {
-    // guard clause
-    if (!answeredQuestion || !currentPlayer) {
-      return;
-    }
-
-    if (currentPlayer.id === players.length) {
-      setCurrentPlayer(players[0]);
-    } else {
-      setCurrentPlayer(players[currentPlayer?.id]);
-    }
-
-    const category = categories.find((c: Category) => c.name === answeredQuestion.category);
-    if (category) {
-      category.questions.forEach((q: Question) => {
-        if (q.question === answeredQuestion.question) {
-          q.attempted_answer = answeredQuestion.attempted_answer;
-        }
-      });
-    }
-
-  }, [answeredQuestion]);
-
   const createPlayerItem = (player: Player) => {
     return (
       <View key={player.id}
@@ -106,7 +84,5 @@ const SelectQuestion = ({ route, navigation }) => {
     </Container>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default SelectQuestion;
