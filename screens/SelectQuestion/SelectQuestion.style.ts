@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   playerItemView: {
     display: "flex",
     flexDirection: "row",
-    marginBottom: 10
+    marginBottom: 20
   },
   questionButton: {
     margin: 5

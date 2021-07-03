@@ -15,6 +15,9 @@ const styles = StyleSheet.create({
   submitButton: {
     alignSelf: "center",
     padding: 20
+  },
+  stealButton: {
+    marginRight: 5,
   }
 });
 

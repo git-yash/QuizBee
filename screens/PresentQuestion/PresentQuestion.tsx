@@ -1,4 +1,4 @@
-import { Body, Button, Container, Content, Footer, Icon, ListItem, Radio, Text, Toast, View } from "native-base";
+import { Body, Button, Container, Content, Footer, Icon, Item, ListItem, Radio, Text, Toast, View } from "native-base";
 import React from "react";
 import { Alert, Route } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -19,6 +19,7 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
     players,
     categories,
     getColor,
+    getWinner
   } = usePresentQuestion(navigation, route);
 
   const createAnswerChoiceItem = (id: number, answerChoice: string) => {
@@ -42,7 +43,7 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
       return;
     }
     navigation.setOptions({
-      headerRight: () => (<Button onPress={() => showStealOptions()}><Icon name="shuffle" /></Button>)
+      headerRight: () => (<Button style={styles.stealButton} onPress={() => showStealOptions()}><Icon name="shuffle" /></Button>)
     });
   }, [currentPlayer]);
 
@@ -83,6 +84,10 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
                 duration: question.isCorrectAnswer() ? 1500 : 3000
               });
 
+              const winner = getWinner();
+              if (winner) {
+                Alert.alert("Game Over", `Winner is: ${winner.name}`);
+              }
               navigation.navigate("SelectQuestion", {
                 name: "Select Question",
                 players: players,

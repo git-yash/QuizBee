@@ -2,6 +2,8 @@ import { useState } from "react";
 import Player from "../../models/Player";
 import { ActionSheet } from "native-base";
 import { Route } from "react-native";
+import Category from "../../models/Category";
+import Question from "../../models/Question";
 
 const usePresentQuestion = (navigation: any, route: Route) => {
   const { question, players, categories, currentPlayerRef } = route.params;
@@ -33,12 +35,31 @@ const usePresentQuestion = (navigation: any, route: Route) => {
     if (!question.attempted_answer) {
       return "black";
     } else if (question.correct_answer === answerChoice) {
-      return "#89d469";
+      return "#66bf40";
     } else if (selectedAnswer === answerChoice) {
-      return "#f19191";
+      return "#ca6060";
     } else {
       return "black";
     }
+  };
+
+  const getWinner = () => {
+    let totalAnsweredQuestions = 0;
+    let totalQuestions = 0;
+
+    categories.forEach((c: Category) => {
+      totalQuestions += c.questions.length;
+
+      const answeredQuestions = c.questions.filter((q: Question) => q.attempted_answer);
+      totalAnsweredQuestions += answeredQuestions.length;
+    });
+
+    if (totalQuestions === totalAnsweredQuestions) {
+      const sortPlayers = players.sort((a: Player, b: Player) => a.score - b.score);
+      return sortPlayers[0];
+    }
+
+    return undefined;
   };
 
   return {
@@ -49,7 +70,8 @@ const usePresentQuestion = (navigation: any, route: Route) => {
     selectedAnswer,
     players,
     categories,
-    getColor
+    getColor,
+    getWinner
   };
 };
 
