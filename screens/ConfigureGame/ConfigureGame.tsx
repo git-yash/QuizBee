@@ -74,11 +74,11 @@ const ConfigureGame = (props: { navigation: any }) => {
           <Text style={styles.beeWord}>
             Bee
           </Text>
-          <Image source={require("../../assets/images/wasp.png")} />
+          <Image style={{margin: 7}} source={require("../../assets/images/img.png")} />
         </Header>
         <Content>
           <View style={styles.playerButtonContainer}>
-            <Text style={styles.playerText}>Teams:</Text>
+            <Text style={styles.playerText}>Players:</Text>
             {getPlayerButton(1)}
             {getPlayerButton(2)}
             {getPlayerButton(3)}
