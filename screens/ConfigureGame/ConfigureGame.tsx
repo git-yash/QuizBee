@@ -1,12 +1,24 @@
-import { Body, Button, CheckBox, Container, Content, Footer, Header, ListItem, Radio, Text } from "native-base";
-import { Image, ScrollView, View } from "react-native";
-import React from "react";
-import Category from "../../models/Category";
-import styles from "./ConfigureGame.style";
-import useConfigureGame from "./useConfigureGame";
+import {
+  Body,
+  Button,
+  CheckBox,
+  Container,
+  Content,
+  Footer,
+  Header,
+  ListItem,
+  Radio,
+  Spinner,
+  Text,
+} from 'native-base';
+import {Image, ScrollView, View} from 'react-native';
+import React from 'react';
+import Category from '../../models/Category';
+import styles from './ConfigureGame.style';
+import useConfigureGame from './useConfigureGame';
 
-const ConfigureGame = (props: { navigation: any }) => {
-  const { navigation } = props;
+const ConfigureGame = (props: {navigation: any}) => {
+  const {navigation} = props;
   const {
     startGame,
     isNumberOfPlayersSelected,
@@ -14,7 +26,8 @@ const ConfigureGame = (props: { navigation: any }) => {
     setCategories,
     setNumberOfQuestions,
     categories,
-    numberOfQuestions
+    numberOfQuestions,
+    isLoading,
   } = useConfigureGame(navigation);
 
   const getPlayerButton = (player: number) => {
@@ -68,32 +81,36 @@ const ConfigureGame = (props: { navigation: any }) => {
     <Container>
       <ScrollView>
         <Header style={styles.titleHeader}>
-          <Text style={styles.quizWord}>
-            Quiz
-          </Text>
-          <Text style={styles.beeWord}>
-            Bee
-          </Text>
-          <Image style={{margin: 7}} source={require("../../assets/images/img.png")} />
+          <Text style={styles.quizWord}>Quiz</Text>
+          <Text style={styles.beeWord}>Bee</Text>
+          <Image
+            style={{margin: 7}}
+            source={require('../../assets/images/img.png')}
+          />
         </Header>
         <Content>
-          <View style={styles.playerButtonContainer}>
-            <Text style={styles.playerText}>Players:</Text>
-            {getPlayerButton(1)}
-            {getPlayerButton(2)}
-            {getPlayerButton(3)}
-            {getPlayerButton(4)}
-          </View>
-          <View>
-            <Text style={styles.sectionHeader}>Questions per category</Text>
-            {createNumberOfQuestionItem(5)}
-            {createNumberOfQuestionItem(7)}
-            {createNumberOfQuestionItem(10)}
-          </View>
-          <View>
-            <Text style={styles.sectionHeader}>Select categories</Text>
-            {categories.map(c => createCategoryItem(c))}
-          </View>
+          {isLoading && <Spinner color="#3F51B5" />}
+          {!isLoading && (
+            <>
+              <View style={styles.playerButtonContainer}>
+                <Text style={styles.playerText}>Players:</Text>
+                {getPlayerButton(1)}
+                {getPlayerButton(2)}
+                {getPlayerButton(3)}
+                {getPlayerButton(4)}
+              </View>
+              <View>
+                <Text style={styles.sectionHeader}>Questions per category</Text>
+                {createNumberOfQuestionItem(5)}
+                {createNumberOfQuestionItem(7)}
+                {createNumberOfQuestionItem(10)}
+              </View>
+              <View>
+                <Text style={styles.sectionHeader}>Select categories</Text>
+                {categories.map(c => createCategoryItem(c))}
+              </View>
+            </>
+          )}
         </Content>
       </ScrollView>
       <Footer>

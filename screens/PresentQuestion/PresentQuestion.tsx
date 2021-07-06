@@ -1,15 +1,27 @@
-import { Body, Button, Container, Content, Footer, Icon, Item, ListItem, Radio, Text, Toast, View } from "native-base";
-import React from "react";
-import { Alert, Route } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import Player from "../../models/Player";
-import { decode } from "html-entities";
-import styles from "./PresentQuestion.style";
-import usePresentQuestion from "./usePresentQuestion";
-import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
+import {
+  Body,
+  Button,
+  Container,
+  Content,
+  Footer,
+  Icon,
+  ListItem,
+  Radio,
+  Text,
+  Toast,
+  View,
+} from 'native-base';
+import React from 'react';
+import {Alert, Route} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import Player from '../../models/Player';
+import {decode} from 'html-entities';
+import styles from './PresentQuestion.style';
+import usePresentQuestion from './usePresentQuestion';
+import ScoreBoard from '../../components/ScoreBoard/ScoreBoard';
 
-const PresentQuestion = (props: { navigation: any, route: Route }) => {
-  const { navigation, route } = props;
+const PresentQuestion = (props: {navigation: any; route: Route}) => {
+  const {navigation, route} = props;
   const {
     showStealOptions,
     currentPlayer,
@@ -19,12 +31,16 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
     players,
     categories,
     getColor,
-    getWinner
+    getWinner,
   } = usePresentQuestion(navigation, route);
 
   const createAnswerChoiceItem = (id: number, answerChoice: string) => {
     return (
-      <ListItem key={id} onPress={() => !question.attempted_answer && setSelectedAnswer(answerChoice)}>
+      <ListItem
+        key={id}
+        onPress={() =>
+          !question.attempted_answer && setSelectedAnswer(answerChoice)
+        }>
         {!question.attempted_answer && (
           <Radio
             selected={selectedAnswer === answerChoice}
@@ -32,7 +48,9 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
           />
         )}
         <Body>
-          <Text style={{ color: getColor(answerChoice) }}>{decode(answerChoice)}</Text>
+          <Text style={{color: getColor(answerChoice)}}>
+            {decode(answerChoice)}
+          </Text>
         </Body>
       </ListItem>
     );
@@ -43,7 +61,11 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
       return;
     }
     navigation.setOptions({
-      headerRight: () => (<Button style={styles.stealButton} onPress={() => showStealOptions()}><Icon name="shuffle" /></Button>)
+      headerRight: () => (
+        <Button style={styles.stealButton} onPress={() => showStealOptions()}>
+          <Icon name="shuffle" />
+        </Button>
+      ),
     });
   }, [currentPlayer]);
 
@@ -51,18 +73,16 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
     <Container>
       <ScrollView>
         <Content>
-          <View
-            style={styles.playerScores}>
-            {players.map((p: Player) => <ScoreBoard key={p.id} currentPlayer={currentPlayer} player={p} />)}
+          <View style={styles.playerScores}>
+            {players.map((p: Player) => (
+              <ScoreBoard key={p.id} currentPlayer={currentPlayer} player={p} />
+            ))}
           </View>
-          <Text
-            style={styles.questionText}>
-            {decode(question.question)}
-          </Text>
+          <Text style={styles.questionText}>{decode(question.question)}</Text>
           {question
             .getOptions()
             .map((o: string, index: number) =>
-              createAnswerChoiceItem(index, o)
+              createAnswerChoiceItem(index, o),
             )}
         </Content>
       </ScrollView>
@@ -72,27 +92,36 @@ const PresentQuestion = (props: { navigation: any, route: Route }) => {
             style={styles.submitButton}
             onPress={() => {
               if (!selectedAnswer) {
-                Alert.alert("Invalid selection", "Please select an answer", undefined, { cancelable: true });
+                Alert.alert(
+                  'Invalid selection',
+                  'Please select an answer',
+                  undefined,
+                  {cancelable: true},
+                );
                 return;
               }
 
               question.attempted_answer = selectedAnswer;
               currentPlayer.answerQuestion(question);
               Toast.show({
-                text: question.isCorrectAnswer() ? "Correct" : "Incorrect! The correct answer was " + question.correct_answer + ".",
-                type: question.isCorrectAnswer() ? "success" : "danger",
-                duration: question.isCorrectAnswer() ? 1500 : 3000
+                text: question.isCorrectAnswer()
+                  ? 'Correct'
+                  : 'Incorrect! The correct answer was ' +
+                    question.correct_answer +
+                    '.',
+                type: question.isCorrectAnswer() ? 'success' : 'danger',
+                duration: question.isCorrectAnswer() ? 1500 : 3000,
               });
 
               const winner = getWinner();
               if (winner) {
-                Alert.alert("Game Over", `Winner is: ${winner.name}`);
+                Alert.alert('Game Over', `Winner is: ${winner.name}`);
               }
-              navigation.navigate("SelectQuestion", {
-                name: "Select Question",
+              navigation.navigate('SelectQuestion', {
+                name: 'Select Question',
                 players: players,
                 categories: categories,
-                answeredQuestion: question
+                answeredQuestion: question,
               });
             }}>
             <Text>Submit</Text>

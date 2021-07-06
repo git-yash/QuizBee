@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
-import Category from "../../models/Category";
-import Question from "../../models/Question";
-import Player from "../../models/Player";
-import Util from "../../util/Util";
-import { Route } from "react-native";
+import {useEffect, useState} from 'react';
+import Category from '../../models/Category';
+import Question from '../../models/Question';
+import Player from '../../models/Player';
+import Util from '../../util/Util';
+import {Route} from 'react-native';
 
 const useSelectQuestion = (route: Route) => {
-  const { categories, players, answeredQuestion } = route.params;
-  const [currentPlayer, setCurrentPlayer] = useState<Player>(Util.getRandomPlayerId(players));
+  const {categories, players, answeredQuestion} = route.params;
+  const [currentPlayer, setCurrentPlayer] = useState<Player>(
+    Util.getRandomPlayerId(players),
+  );
 
   useEffect(() => {
     // guard clause
@@ -21,7 +23,9 @@ const useSelectQuestion = (route: Route) => {
       setCurrentPlayer(players[currentPlayer?.id]);
     }
 
-    const category = categories.find((c: Category) => c.name === answeredQuestion.category);
+    const category = categories.find(
+      (c: Category) => c.name === answeredQuestion.category,
+    );
     if (category) {
       category.questions.forEach((q: Question) => {
         if (q.question === answeredQuestion.question) {
@@ -29,13 +33,12 @@ const useSelectQuestion = (route: Route) => {
         }
       });
     }
-
   }, [answeredQuestion]);
 
   return {
     categories,
     currentPlayer,
-    players
+    players,
   };
 };
 

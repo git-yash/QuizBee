@@ -1,35 +1,35 @@
-import { StyleSheet } from "react-native";
+import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   playerInfo: {
-    alignSelf: "center",
-    fontWeight: "bold"
+    alignSelf: 'center',
+    fontWeight: 'bold',
   },
   categoryView: {
-    backgroundColor: "#ececec",
+    backgroundColor: '#ececec',
     padding: 10,
     marginBottom: 5,
-    borderBottomColor: "lightgray",
-    borderBottomWidth: 1
+    borderBottomColor: 'lightgray',
+    borderBottomWidth: 1,
   },
   categoryText: {
     fontSize: 22,
     marginBottom: 10,
-    marginLeft: 5
+    marginLeft: 5,
   },
   categoryQuestions: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap"
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   playerItemView: {
-    display: "flex",
-    flexDirection: "row",
-    marginBottom: 20
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: 20,
   },
   questionButton: {
-    margin: 5
-  }
+    margin: 5,
+  },
 });
 
 export default styles;

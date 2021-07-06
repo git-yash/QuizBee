@@ -1,20 +1,27 @@
-import { Alert } from "react-native";
-import Player from "../../models/Player";
-import { useEffect, useState } from "react";
-import Category from "../../models/Category";
-import Question from "../../models/Question";
-import ConfigureGameService from "./ConfigureGame.service";
+import {Alert} from 'react-native';
+import Player from '../../models/Player';
+import {useEffect, useState} from 'react';
+import Category from '../../models/Category';
+import Question from '../../models/Question';
+import ConfigureGameService from './ConfigureGame.service';
 
 const useConfigureGame = (navigation: any) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
   const [numberOfQuestions, setNumberOfQuestions] = useState<number>(5);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const configureGameService = new ConfigureGameService();
 
   const setQuestions = async (selectedCategories: Category[]) => {
     for (const c of selectedCategories) {
-      const questions: Question[] = await configureGameService.getQuestionsForCategory(c, numberOfQuestions);
-      const sortedQuestions = questions.sort((a, b) => a.getDifficultyWeightage() - b.getDifficultyWeightage());
+      const questions: Question[] =
+        await configureGameService.getQuestionsForCategory(
+          c,
+          numberOfQuestions,
+        );
+      const sortedQuestions = questions.sort(
+        (a, b) => a.getDifficultyWeightage() - b.getDifficultyWeightage(),
+      );
       c.setQuestions(sortedQuestions);
     }
   };
@@ -26,10 +33,16 @@ const useConfigureGame = (navigation: any) => {
   const startGame = async () => {
     let selectedCategories = categories.filter(c => c.selected);
     if (selectedCategories.length === 0) {
-      Alert.alert("Invalid category selection", "Please select at least one category");
+      Alert.alert(
+        'Invalid category selection',
+        'Please select at least one category',
+      );
       return;
     } else if (selectedCategories.length > 8) {
-      Alert.alert("Invalid category selection", "Select less than 8 categories");
+      Alert.alert(
+        'Invalid category selection',
+        'Select less than 8 categories',
+      );
       return;
     }
 
@@ -38,17 +51,23 @@ const useConfigureGame = (navigation: any) => {
       players.push(new Player(i));
     }
 
+    setIsLoading(true);
     await setQuestions(selectedCategories);
+    setIsLoading(false);
 
-    navigation.navigate("SelectQuestion", {
-      name: "Questions",
+    navigation.navigate('SelectQuestion', {
+      name: 'Questions',
       players: players,
-      categories: selectedCategories
+      categories: selectedCategories,
     });
   };
 
   useEffect(() => {
-    configureGameService.getCategories().then(trivia_categories => setCategories(trivia_categories));
+    setIsLoading(true);
+    configureGameService
+      .getCategories()
+      .then(trivia_categories => setCategories(trivia_categories))
+      .then(() => setIsLoading(false));
   }, []);
 
   return {
@@ -58,7 +77,8 @@ const useConfigureGame = (navigation: any) => {
     setNumberOfQuestions,
     setCategories,
     numberOfQuestions,
-    categories
+    categories,
+    isLoading,
   };
 };
 
