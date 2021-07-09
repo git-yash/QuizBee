@@ -15,7 +15,7 @@ const App = () => {
           <Stack.Screen
             name="ConfigureScreen"
             component={ConfigureGame}
-            options={{ headerShown: false }}
+            options={{ headerShown: false, title: "" }}
           />
           <Stack.Screen name="PresentQuestion" component={PresentQuestion}
                         options={({ route }) => ({ title: route.params.name })}

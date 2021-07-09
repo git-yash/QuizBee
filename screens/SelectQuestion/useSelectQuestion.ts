@@ -1,19 +1,18 @@
-import {useEffect, useState} from 'react';
-import Category from '../../models/Category';
-import Question from '../../models/Question';
-import Player from '../../models/Player';
-import Util from '../../util/Util';
-import {Route} from 'react-native';
+import { useEffect, useState } from "react";
+import Category from "../../models/Category";
+import Question from "../../models/Question";
+import Player from "../../models/Player";
+import Util from "../../util/Util";
+import { Route } from "react-native";
 
-const useSelectQuestion = (route: Route) => {
-  const {categories, players, answeredQuestion} = route.params;
+const useSelectQuestion = (navigation: any, route: Route) => {
+  const { categories, players, answeredQuestion, winner } = route.params;
   const [currentPlayer, setCurrentPlayer] = useState<Player>(
-    Util.getRandomPlayerId(players),
+    Util.getRandomPlayerId(players)
   );
 
-  useEffect(() => {
-    // guard clause
-    if (!answeredQuestion || !currentPlayer) {
+  const setNextPlayer = () => {
+    if (winner) {
       return;
     }
 
@@ -22,23 +21,52 @@ const useSelectQuestion = (route: Route) => {
     } else {
       setCurrentPlayer(players[currentPlayer?.id]);
     }
+  };
 
-    const category = categories.find(
-      (c: Category) => c.name === answeredQuestion.category,
+  const getCategory = () => {
+    return categories.find(
+      (c: Category) => c.name === answeredQuestion.category
     );
-    if (category) {
-      category.questions.forEach((q: Question) => {
-        if (q.question === answeredQuestion.question) {
-          q.attempted_answer = answeredQuestion.attempted_answer;
-        }
-      });
+  };
+
+  const setAnswer = () => {
+    const category = getCategory();
+    if (!category) {
+      return;
     }
+
+    category.questions.forEach((q: Question) => {
+      if (q.question === answeredQuestion.question) {
+        q.attempted_answer = answeredQuestion.attempted_answer;
+      }
+    });
+  };
+
+  const onSelectQuestion = (question: Question) => {
+    navigation.navigate("PresentQuestion", {
+      name: question.category,
+      question: question,
+      players: players,
+      categories: categories,
+      currentPlayerRef: currentPlayer
+    });
+  };
+
+  useEffect(() => {
+    // guard clause
+    if (!answeredQuestion || !currentPlayer) {
+      return;
+    }
+
+    setNextPlayer();
+    setAnswer();
   }, [answeredQuestion]);
 
   return {
     categories,
     currentPlayer,
     players,
+    onSelectQuestion
   };
 };
 

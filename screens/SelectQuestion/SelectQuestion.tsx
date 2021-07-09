@@ -11,7 +11,7 @@ import {Route} from 'react-native';
 
 const SelectQuestion = (props: {navigation: any; route: Route}) => {
   const {navigation, route} = props;
-  const {categories, currentPlayer, players} = useSelectQuestion(route);
+  const {categories, currentPlayer, players, onSelectQuestion} = useSelectQuestion(navigation, route);
 
   const createQuestionButton = (question: Question, id: number) => {
     return (
@@ -19,15 +19,7 @@ const SelectQuestion = (props: {navigation: any; route: Route}) => {
         key={id}
         rounded
         light
-        onPress={() => {
-          navigation.navigate('PresentQuestion', {
-            name: question.category,
-            question: question,
-            players: players,
-            categories: categories,
-            currentPlayerRef: currentPlayer,
-          });
-        }}
+        onPress={() => onSelectQuestion(question)}
         style={{
           ...styles.questionButton,
           backgroundColor: question.getColor(),
